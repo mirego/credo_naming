@@ -1,9 +1,9 @@
-# CredoFilenameConsistency
-
-[![Travis](https://travis-ci.com/mirego/credo_filename_consistency.svg?branch=master)](https://travis-ci.com/mirego/credo_filename_consistency)
-[![Hex.pm](https://img.shields.io/hexpm/v/credo_filename_consistency.svg)](https://hex.pm/packages/credo_filename_consistency)
-
-`CredoFilenameConsistency` is a check to ensure filename consistency across an Elixir project.
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/11348/56434862-6dee4080-62a4-11e9-9e43-f32f9691ade0.png" width="600" />
+  <p><br /><code>CredoFilenameConsistency</code> is a check to ensure filename consistency across an Elixir project.</p>
+  <a href="https://travis-ci.com/mirego/credo_filename_consistency"><img src="https://travis-ci.com/mirego/credo_filename_consistency.svg?branch=master" /></a>
+  <a href="https://hex.pm/packages/credo_filename_consistency"><img src="https://img.shields.io/hexpm/v/credo_filename_consistency.svg" /></a>
+</div>
 
 ## Installation
 
@@ -75,6 +75,8 @@ end
 ## License
 
 `CredoFilenameConsistency` is © 2019 [Mirego](https://www.mirego.com) and may be freely distributed under the [New BSD license](http://opensource.org/licenses/BSD-3-Clause). See the [`LICENSE.md`](https://github.com/mirego/credo_filename_consistency/blob/master/LICENSE.md) file.
+
+The files logo is based on [this lovely icon by ibrandify](https://thenounproject.com/term/files/2426627), from The Noun Project. Used under a [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/) license.
 
 ## About Mirego
 
