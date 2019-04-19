@@ -22,9 +22,7 @@ end
 You just need to add the check in your `.credo.exs` configuration file (both `excluded_paths` and `acronyms` options are optional):
 
 ```elixir
-{CredoFilenameConsistency.Check.Consistency.FilenameConsistency,
-  excluded_paths: ["test/support", "priv", "rel", "mix.exs"],
-  acronyms: [{"MyAppGraphQL", "myapp_graphql"}]}
+{CredoFilenameConsistency.Check.Consistency.FilenameConsistency}
 ```
 
 And now suppose you have a `lib/foo.ex` that defines a `Bar` module:
@@ -40,6 +38,38 @@ $ mix credo
 ┃       ["lib/bar/bar.ex", "lib/bar.ex"]
 ┃
 ┃       lib/foo.ex:1:11 #(Bar)
+```
+
+### Options
+
+#### Exclusions
+
+You can exclude files or paths with the `excluded_paths` option:
+
+```elixir
+{CredoFilenameConsistency.Check.Consistency.FilenameConsistency, excluded_paths: ["test/support", "priv", "rel", "mix.exs"]}
+```
+
+#### Acronyms
+
+The check converts module names to paths using `PascalCase` convention, which means that the file `lib/myapp_graphql` is expected to define the module:
+
+```elixir
+defmodule MyappGraphql do
+end
+```
+
+If you want to define your own acronyms, you can do so using the `acronyms` option:
+
+```elixir
+{CredoFilenameConsistency.Check.Consistency.FilenameConsistency, acronyms: [{"MyAppGraphQL", "myapp_graphql"}]}
+```
+
+Using this, the `lib/myapp_graphql` will expect to define the module:
+
+```elixir
+defmodule MyAppGraphQl do
+end
 ```
 
 ## License
