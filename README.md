@@ -19,10 +19,12 @@ end
 
 ## Usage
 
-You just need to add the check in your `.credo.exs` configuration file:
+You just need to add the check in your `.credo.exs` configuration file (both `excluded_paths` and `acronyms` options are optional):
 
 ```elixir
-{CredoFilenameConsistency.Check.Consistency.FilenameConsistency, excluded_paths: ["test/support", "priv", "rel", "mix.exs"]}
+{CredoFilenameConsistency.Check.Consistency.FilenameConsistency,
+  excluded_paths: ["test/support", "priv", "rel", "mix.exs"],
+  acronyms: [{"MyAppGraphQL", "myapp_graphql"}]}
 ```
 
 And now suppose you have a `lib/foo.ex` that defines a `Bar` module:
