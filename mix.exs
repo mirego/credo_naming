@@ -27,7 +27,8 @@ defmodule CredoFilenameConsistency.MixProject do
 
   defp deps do
     [
-      {:credo, "~> 1.0"}
+      {:credo, "~> 1.0"},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
