@@ -68,7 +68,7 @@ If you want to define your own acronyms, you can do so using the `acronyms` opti
 Using this, the `lib/myapp_graphql` will expect to define the module:
 
 ```elixir
-defmodule MyAppGraphQl do
+defmodule MyAppGraphQL do
 end
 ```
 
