@@ -7,7 +7,7 @@
 
 ## Installation
 
-Add the `:CredoFilenameConsistency` to your `mix.exs` dependencies:
+Add the `:credo_filename_consistency` package to your `mix.exs` dependencies:
 
 ```elixir
 def deps do
