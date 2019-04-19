@@ -19,7 +19,7 @@ end
 
 ## Usage
 
-You just need to add the check in your `.credo.exs` configuration file (both `excluded_paths` and `acronyms` options are optional):
+You just need to add the check in your `.credo.exs` configuration file:
 
 ```elixir
 {CredoFilenameConsistency.Check.Consistency.FilenameConsistency}
