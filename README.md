@@ -1,5 +1,8 @@
 # CredoFilenameConsistency
 
+[![Travis](https://travis-ci.com/mirego/credo_filename_consistency.svg?branch=master)](https://travis-ci.com/mirego/credo_filename_consistency)
+[![Hex.pm](https://img.shields.io/hexpm/v/credo_filename_consistency.svg)](https://hex.pm/packages/credo_filename_consistency)
+
 `CredoFilenameConsistency` is a check to ensure filename consistency across an Elixir project.
 
 ## Installation
