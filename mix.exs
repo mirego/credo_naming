@@ -11,7 +11,7 @@ defmodule CredoFilenameConsistency.MixProject do
       description: "A check to ensure filename consistency across an Elixir project.",
       source_url: "https://github.com/mirego/credo_filename_consistency",
       homepage_url: "https://github.com/mirego/credo_filename_consistency",
-      docs: [extras: ["README.md"], main: "readme", source_ref: "v#{@version}", source_url: "https://github.com/mirego/credo_filename_consistency"]
+      docs: [extras: ["README.md"], main: "readme", source_ref: "v#{@version}", source_url: "https://github.com/mirego/credo_filename_consistency"],
       package: package(),
       elixir: "~> 1.8",
       start_permanent: false,
