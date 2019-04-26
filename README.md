@@ -1,9 +1,11 @@
-<div align="center">
+<p align="center">
   <img src="https://user-images.githubusercontent.com/11348/56435803-b9561e00-62a7-11e9-84f1-76083f72cc59.png" width="600" />
-  <p><br /><code>CredoFilenameConsistency</code> is a check to ensure filename consistency across an Elixir project.</p>
+  <br /><br />
+  <code>CredoFilenameConsistency</code> is a check to ensure filename consistency across an Elixir project.
+  <br /><br />
   <a href="https://travis-ci.com/mirego/credo_filename_consistency"><img src="https://travis-ci.com/mirego/credo_filename_consistency.svg?branch=master" /></a>
   <a href="https://hex.pm/packages/credo_filename_consistency"><img src="https://img.shields.io/hexpm/v/credo_filename_consistency.svg" /></a>
-</div>
+</p>
 
 ## Installation
 
