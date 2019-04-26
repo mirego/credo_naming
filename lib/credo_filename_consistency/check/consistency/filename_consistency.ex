@@ -99,7 +99,7 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistency do
     )
   end
 
-  def valid_filenames(module, root, extension, acronyms) when is_binary(module) do
+  defp valid_filenames(module, root, extension, acronyms) when is_binary(module) do
     parts =
       module
       |> replace_acronyms(acronyms)
