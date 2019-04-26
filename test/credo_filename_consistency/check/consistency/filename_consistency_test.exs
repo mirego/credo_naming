@@ -85,6 +85,15 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistencyTest do
     |> refute_issues(@described_check)
   end
 
+  test "it should NOT report violation for nested module in umbrella app" do
+    """
+    defmodule Foo.Bar do
+    end
+    """
+    |> to_source_file("apps/abc/lib/foo/bar.ex")
+    |> refute_issues(@described_check)
+  end
+
   #
   # cases raising issues
   #

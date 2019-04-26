@@ -13,7 +13,7 @@ defmodule CredoFilenameConsistency.MixProject do
       homepage_url: "https://github.com/mirego/credo_filename_consistency",
       docs: [extras: ["README.md"], main: "readme", source_ref: "v#{@version}", source_url: "https://github.com/mirego/credo_filename_consistency"],
       package: package(),
-      elixir: "~> 1.8",
+      elixir: "~> 1.6",
       start_permanent: false,
       deps: deps()
     ]
