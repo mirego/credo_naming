@@ -55,7 +55,7 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistency do
   end
 
   defp issues([{module_name, line_no}], issue_meta, source_file, acronyms) do
-    [root | _] = Path.split(source_file.filename)
+    root = root_path(source_file.filename)
     extension = Path.extname(source_file.filename)
     expected_filenames = valid_filenames(module_name, root, extension, acronyms)
 
@@ -67,6 +67,13 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistency do
   end
 
   defp issues(_, _, _, _), do: []
+
+  defp root_path(filename) do
+    case Path.split(filename) do
+      ["apps", app, root | _] -> Path.join(["apps", app, root])
+      [root | _] -> root
+    end
+  end
 
   defp root_modules({:__block__, _, statements}) do
     Enum.reduce(statements, [], &process_root_statement/2)
