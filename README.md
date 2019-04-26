@@ -14,7 +14,7 @@ Add the `:credo_filename_consistency` package to your `mix.exs` dependencies:
 ```elixir
 def deps do
   [
-    {:credo_filename_consistency, "~> 0.1.0", only: [:dev, :test], runtime: false}
+    {:credo_filename_consistency, "~> 0.2", only: [:dev, :test], runtime: false}
   ]
 end
 ```
