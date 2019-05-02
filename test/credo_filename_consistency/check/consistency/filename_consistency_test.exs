@@ -72,6 +72,22 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistencyTest do
     |> refute_issues(@described_check)
   end
 
+  test "it should NOT report violation for file with multiple modules defined in weird way" do
+    """
+    defmodule Foo.QueryException do
+    end
+    (
+    defmodule Foo.ReportException do
+    end
+    ;
+    defmodule Foo.OutputException do
+    end
+    )
+    """
+    |> to_source_file("lib/foo/exceptions.ex")
+    |> refute_issues(@described_check)
+  end
+
   test "it should NOT report violation for file with single module and implementations for it" do
     """
     defmodule Foo.Bar do
