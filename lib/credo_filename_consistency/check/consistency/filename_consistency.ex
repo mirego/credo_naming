@@ -79,7 +79,9 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistency do
     Enum.reduce(statements, [], &process_root_statement/2)
   end
 
-  defp root_modules({:defmodule, _, _} = statement) do
+  defp root_modules({def_, _, _} = statement)
+       when def_ == :defmodule
+       when def_ == :defprotocol do
     process_root_statement(statement, [])
   end
 
@@ -90,6 +92,11 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistency do
     line_no = Keyword.get(opts, :line)
 
     [{name, line_no} | acc]
+  end
+
+  defp process_root_statement({:defprotocol, opts, args}, acc) do
+    # Credo.Code.Module doesn't understand defprotocol, work around it
+    process_root_statement({:defmodule, opts, args}, acc)
   end
 
   defp process_root_statement(_, acc), do: acc

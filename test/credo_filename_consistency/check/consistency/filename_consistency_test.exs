@@ -85,6 +85,19 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistencyTest do
     |> refute_issues(@described_check)
   end
 
+  test "it should NOT report violation for file with single protocol and implementations of it" do
+    """
+    defprotocol Foo.Bar do
+    end
+    defimpl Foo.Bar, for: List do
+    end
+    defimpl Foo.Bar, for: Map do
+    end
+    """
+    |> to_source_file("lib/foo/bar.ex")
+    |> refute_issues(@described_check)
+  end
+
   test "it should NOT report violation for nested module in umbrella app" do
     """
     defmodule Foo.Bar do
@@ -131,6 +144,32 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistencyTest do
     end
     """
     |> to_source_file("lib/foo_web/bar.ex")
+    |> assert_issue(@described_check)
+  end
+
+  test "it should report a violation for wrong module name (with implementations for it)" do
+    """
+    defmodule Foo.Baz do
+    end
+    defimpl Jason.Encoder, for: Foo.Baz do
+    end
+    defimpl Poison.Encoder, for: Foo.Baz do
+    end
+    """
+    |> to_source_file("lib/foo/bar.ex")
+    |> assert_issue(@described_check)
+  end
+
+  test "it should report a violation for wrong protocol name (with implementations of it)" do
+    """
+    defprotocol Foo.Baz do
+    end
+    defimpl Foo.Baz, for: List do
+    end
+    defimpl Foo.Baz, for: Map do
+    end
+    """
+    |> to_source_file("lib/foo/bar.ex")
     |> assert_issue(@described_check)
   end
 end
