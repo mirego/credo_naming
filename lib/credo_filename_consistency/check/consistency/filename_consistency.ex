@@ -76,23 +76,22 @@ defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistency do
   end
 
   defp root_modules({:__block__, _, statements}) do
-    Enum.reduce(statements, [], &process_root_statement/2)
+    Enum.flat_map(statements, &root_modules/1)
   end
 
-  defp root_modules({:defmodule, _, _} = statement) do
-    process_root_statement(statement, [])
-  end
-
-  defp root_modules(_), do: []
-
-  defp process_root_statement({:defmodule, opts, _} = module, acc) do
+  defp root_modules({:defmodule, opts, _} = module) do
     name = Code.Module.name(module)
     line_no = Keyword.get(opts, :line)
 
-    [{name, line_no} | acc]
+    [{name, line_no}]
   end
 
-  defp process_root_statement(_, acc), do: acc
+  defp root_modules({:defprotocol, opts, args}) do
+    # Credo.Code.Module doesn't understand defprotocol, work around it
+    root_modules({:defmodule, opts, args})
+  end
+
+  defp root_modules(_), do: []
 
   defp issue_for(issue_meta, line_no, %{filename: filename}, expected_filenames, full_name) do
     format_issue(
