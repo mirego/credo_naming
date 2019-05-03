@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.2.1] - 2019-05-03
+
 ### Added
 
 - Add checking of [protocol](https://elixir-lang.org/getting-started/protocols.html) module filenames by [@liskin](https://github.com/liskin). [#2](https://github.com/mirego/credo_filename_consistency/pull/2)
