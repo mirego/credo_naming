@@ -54,7 +54,7 @@ You can exclude files or paths with the `excluded_paths` option:
 
 #### Acronyms
 
-The check converts module names to paths using `PascalCase` convention, which means that the file `lib/myapp_graphql` is expected to define the module:
+The check converts module names to paths using `PascalCase` convention, which means that the file `lib/myapp_graphql.ex` is expected to define the module:
 
 ```elixir
 defmodule MyappGraphql do
@@ -67,7 +67,7 @@ If you want to define your own acronyms, you can do so using the `acronyms` opti
 {CredoFilenameConsistency.Check.Consistency.FilenameConsistency, acronyms: [{"MyAppGraphQL", "myapp_graphql"}]}
 ```
 
-Using this, the `lib/myapp_graphql` will expect to define the module:
+Using this, the `lib/myapp_graphql.ex` file will expect to define the module:
 
 ```elixir
 defmodule MyAppGraphQL do
