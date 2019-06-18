@@ -1,33 +1,47 @@
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/11348/56435803-b9561e00-62a7-11e9-84f1-76083f72cc59.png" width="600" />
+  <img src="https://user-images.githubusercontent.com/11348/59598372-07ca4200-90ca-11e9-8645-88642ef06a64.png" width="600" />
   <br /><br />
-  <code>CredoFilenameConsistency</code> is a check to ensure filename consistency across an Elixir project.
+  <code>CredoNaming</code> is a suite of checks to enforce naming best practices in an Elixir project.
   <br /><br />
-  <a href="https://travis-ci.com/mirego/credo_filename_consistency"><img src="https://travis-ci.com/mirego/credo_filename_consistency.svg?branch=master" /></a>
-  <a href="https://hex.pm/packages/credo_filename_consistency"><img src="https://img.shields.io/hexpm/v/credo_filename_consistency.svg" /></a>
+  <a href="https://travis-ci.com/mirego/credo_naming"><img src="https://travis-ci.com/mirego/credo_naming.svg?branch=master" /></a>
+  <a href="https://hex.pm/packages/credo_naming"><img src="https://img.shields.io/hexpm/v/credo_naming.svg" /></a>
 </p>
 
 ## Installation
 
-Add the `:credo_filename_consistency` package to your `mix.exs` dependencies:
+Add the `:credo_naming` package to your `mix.exs` dependencies:
 
 ```elixir
 def deps do
   [
-    {:credo_filename_consistency, "~> 0.2", only: [:dev, :test], runtime: false}
+    {:credo_naming, "~> 0.1", only: [:dev, :test], runtime: false}
   ]
 end
 ```
 
 ## Usage
 
-You just need to add the check in your `.credo.exs` configuration file:
+You just need to add the checks you want in your `.credo.exs` configuration file.
+
+### Avoid specific terms in module names
+
+This check will raise an issue if specific terms are found in module names.
 
 ```elixir
-{CredoFilenameConsistency.Check.Consistency.FilenameConsistency}
+{CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames, terms: ["Manager", "Helper", "Helpers"]}
 ```
 
-And now suppose you have a `lib/foo.ex` that defines a `Bar` module:
+With this check configuration for example, a module named `MyApp.UserManager` or `MyApp.FormHelpers` would not be allowed.
+
+### Ensure module/filename consistency
+
+This check will raise an issue if the name of a module defined in a file does not match its filename.
+
+```elixir
+{CredoNaming.Check.Consistency.ModuleFilename}
+```
+
+Suppose you have a `lib/foo.ex` that defines a `Bar` module:
 
 ```
 $ mix credo
@@ -42,14 +56,12 @@ $ mix credo
 ┃       lib/foo.ex:1:11 #(Bar)
 ```
 
-### Options
-
 #### Exclusions
 
 You can exclude files or paths with the `excluded_paths` option:
 
 ```elixir
-{CredoFilenameConsistency.Check.Consistency.FilenameConsistency, excluded_paths: ["test/support", "priv", "rel", "mix.exs"]}
+{CredoNaming.Check.Consistency.ModuleFilename, excluded_paths: ["test/support", "priv", "rel", "mix.exs"]}
 ```
 
 #### Acronyms
@@ -64,7 +76,7 @@ end
 If you want to define your own acronyms, you can do so using the `acronyms` option:
 
 ```elixir
-{CredoFilenameConsistency.Check.Consistency.FilenameConsistency, acronyms: [{"MyAppGraphQL", "myapp_graphql"}]}
+{CredoNaming.Check.Consistency.ModuleFilename, acronyms: [{"MyAppGraphQL", "myapp_graphql"}]}
 ```
 
 Using this, the `lib/myapp_graphql.ex` file will expect to define the module:
@@ -76,9 +88,9 @@ end
 
 ## License
 
-`CredoFilenameConsistency` is © 2019 [Mirego](https://www.mirego.com) and may be freely distributed under the [New BSD license](http://opensource.org/licenses/BSD-3-Clause). See the [`LICENSE.md`](https://github.com/mirego/credo_filename_consistency/blob/master/LICENSE.md) file.
+`CredoNaming` is © 2019 [Mirego](https://www.mirego.com) and may be freely distributed under the [New BSD license](http://opensource.org/licenses/BSD-3-Clause). See the [`LICENSE.md`](https://github.com/mirego/credo_naming/blob/master/LICENSE.md) file.
 
-The books logo is based on [this lovely icon by Mr Balind](https://thenounproject.com/term/books/1247539), from The Noun Project. Used under a [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/) license.
+The tag logo is based on [this lovely icon by Vectors Point](https://thenounproject.com/term/tag/2606427), from The Noun Project. Used under a [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/) license.
 
 ## About Mirego
 

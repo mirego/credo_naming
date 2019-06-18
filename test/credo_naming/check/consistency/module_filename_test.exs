@@ -1,7 +1,7 @@
-defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistencyTest do
+defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
   use Credo.TestHelper
 
-  @described_check CredoFilenameConsistency.Check.Consistency.FilenameConsistency
+  @described_check CredoNaming.Check.Consistency.ModuleFilename
 
   #
   # cases NOT raising issues

@@ -1,17 +1,17 @@
-defmodule CredoFilenameConsistency.MixProject do
+defmodule CredoNaming.MixProject do
   use Mix.Project
 
-  @version "0.2.1"
+  @version "0.1.0"
 
   def project do
     [
       version: @version,
-      app: :credo_filename_consistency,
-      name: "CredoFilenameConsistency",
-      description: "A check to ensure filename consistency across an Elixir project.",
-      source_url: "https://github.com/mirego/credo_filename_consistency",
-      homepage_url: "https://github.com/mirego/credo_filename_consistency",
-      docs: [extras: ["README.md"], main: "readme", source_ref: "v#{@version}", source_url: "https://github.com/mirego/credo_filename_consistency"],
+      app: :credo_naming,
+      name: "CredoNaming",
+      description: "A suite of checks to enforce naming best practices in an Elixir project.",
+      source_url: "https://github.com/mirego/credo_naming",
+      homepage_url: "https://github.com/mirego/credo_naming",
+      docs: [extras: ["README.md"], main: "readme", source_ref: "v#{@version}", source_url: "https://github.com/mirego/credo_naming"],
       package: package(),
       elixir: "~> 1.6",
       start_permanent: false,
@@ -37,7 +37,7 @@ defmodule CredoFilenameConsistency.MixProject do
       maintainers: ["Rémi Prévost"],
       licenses: ["BSD-3"],
       links: %{
-        "GitHub" => "https://github.com/mirego/credo_filename_consistency"
+        "GitHub" => "https://github.com/mirego/credo_naming"
       }
     }
   end

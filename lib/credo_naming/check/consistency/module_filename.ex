@@ -1,4 +1,4 @@
-defmodule CredoFilenameConsistency.Check.Consistency.FilenameConsistency do
+defmodule CredoNaming.Check.Consistency.ModuleFilename do
   @moduledoc false
 
   @checkdoc """
