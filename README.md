@@ -41,7 +41,7 @@ This check will raise an issue if the name of a module defined in a file does no
 {CredoNaming.Check.Consistency.ModuleFilename}
 ```
 
-Suppose you have a `lib/foo.ex` that defines a `Bar` module:
+Suppose you have a `lib/foo.ex` file that defines a `Bar` module:
 
 ```
 $ mix credo
