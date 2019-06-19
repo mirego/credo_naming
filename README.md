@@ -31,6 +31,18 @@ This check will raise an issue if specific terms are found in module names.
 {CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames, terms: ["Manager", "Helper", "Helpers"]}
 ```
 
+Suppose you have a `MyApp.ErrorHelpers` module:
+
+```
+$ mix credo
+
+┃  Warnings - please take a look
+┃
+┃ [W] ↘ `Helpers` is included in the list of terms to avoid in module names.
+┃       Consider replacing it with a more accurate one.
+┃       lib/my_app/error_helpers.ex:1:39 #(MyApp.ErrorHelpers)
+```
+
 With this check configuration for example, a module named `MyApp.UserManager` or `MyApp.FormHelpers` would not be allowed.
 
 ### Ensure module/filename consistency
