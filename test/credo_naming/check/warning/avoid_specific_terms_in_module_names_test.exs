@@ -50,4 +50,13 @@ defmodule CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNamesTest do
     |> to_source_file
     |> assert_issue(@described_check, terms: ["Manager"])
   end
+
+  test "it should report a violation in a parent module" do
+    """
+    defmodule App.Helpers.Error do
+    end
+    """
+    |> to_source_file
+    |> assert_issue(@described_check, terms: ["Helpers"])
+  end
 end
