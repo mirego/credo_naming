@@ -60,7 +60,7 @@ defmodule CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames do
     Enum.any?(terms, fn
       term_to_avoid when is_binary(term_to_avoid) -> String.downcase(term_to_avoid) == String.downcase(term)
       %Regex{} = term_to_avoid -> Regex.match?(term_to_avoid, term)
-      term -> raise("The "terms" config expected each term to be a String or Regex, got: #{inspect(term)}")
+      term -> raise(~s(The "terms" config expected each term to be a String or Regex, got: #{inspect(term)}))
     end)
   end
 
