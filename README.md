@@ -98,6 +98,11 @@ defmodule MyAppGraphQL do
 end
 ```
 
+## Contributors
+
+* Rémi Prévost ([@remiprev](https://github.com/remiprev))
+* Tomáš Janoušek ([@liskin](https://github.com/liskin))
+
 ## License
 
 `CredoNaming` is © 2019 [Mirego](https://www.mirego.com) and may be freely distributed under the [New BSD license](http://opensource.org/licenses/BSD-3-Clause). See the [`LICENSE.md`](https://github.com/mirego/credo_naming/blob/master/LICENSE.md) file.
