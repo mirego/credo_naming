@@ -28,7 +28,7 @@ You just need to add the checks you want in your `.credo.exs` configuration file
 This check will raise an issue if specific terms are found in module names.
 
 ```elixir
-{CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames, terms: ["Manager", "Helper", "Helpers"]}
+{CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames, terms: ["Manager", ~r/Helpers?/]}
 ```
 
 Suppose you have a `MyApp.ErrorHelpers` module:

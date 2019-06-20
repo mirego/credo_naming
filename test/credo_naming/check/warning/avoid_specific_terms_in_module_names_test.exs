@@ -59,4 +59,22 @@ defmodule CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNamesTest do
     |> to_source_file
     |> assert_issue(@described_check, terms: ["Helpers"])
   end
+
+  test "it should report a violation in a module with mixed case" do
+    """
+    defmodule App.Helper.Error do
+    end
+    """
+    |> to_source_file
+    |> assert_issue(@described_check, terms: ["helper"])
+  end
+
+  test "it should report a violation in a module matching a regular expression" do
+    """
+    defmodule App.Helper.Error do
+    end
+    """
+    |> to_source_file
+    |> assert_issue(@described_check, terms: ["Manager", ~r/^helpers?$/i])
+  end
 end

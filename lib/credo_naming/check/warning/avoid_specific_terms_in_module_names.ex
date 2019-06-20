@@ -44,7 +44,7 @@ defmodule CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames do
       mod
       |> Enum.flat_map(&Name.split_pascal_case(Atom.to_string(&1)))
       |> Enum.reduce(issues, fn term, acc ->
-        if term in terms do
+        if term_to_avoid?(term, terms) do
           acc ++ [issue_for(issue_meta, Keyword.get(opts, :line), term)]
         else
           acc
@@ -55,6 +55,14 @@ defmodule CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames do
   end
 
   def traverse(ast, issues, _, _), do: {ast, issues}
+
+  defp term_to_avoid?(term, terms) do
+    Enum.any?(terms, fn
+      term_to_avoid when is_binary(term_to_avoid) -> String.downcase(term_to_avoid) == String.downcase(term)
+      %Regex{} = term_to_avoid -> Regex.match?(term_to_avoid, term)
+      _ -> false
+    end)
+  end
 
   defp issue_for(issue_meta, line_no, trigger) do
     format_issue(
