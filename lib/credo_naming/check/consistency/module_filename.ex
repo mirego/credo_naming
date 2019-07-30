@@ -127,10 +127,15 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
 
     [shortest_filename | _] = filenames
 
-    # We want to support a `Foo` module in either `lib/foo.ex` or `lib/foo/foo.ex`.
-    duplicated_filename = String.replace(shortest_filename, ~r/\/([^.\/]+)(\..+)$/, "/\\1/\\1\\2")
+    # We want to support a `Foo` module in either `lib/foo.ex` or
+    # `lib/foo/foo.ex`. We also want to strip any `_test` directory suffix
+    # because we might define a `FooTest` module in `test/foo/foo_test.exs`.
+    duplicated_filename =
+      shortest_filename
+      |> String.replace(~r/\/([^.\/]+)(\..+)$/, "/\\1/\\1\\2")
+      |> String.replace(~r/_test\//, "/")
 
-    [duplicated_filename] ++ filenames
+    [duplicated_filename | filenames]
   end
 
   defp merge_filename_parts({[], file_parts}), do: merge_filename_parts({[""], file_parts})
