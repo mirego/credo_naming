@@ -43,6 +43,15 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> refute_issues(@described_check)
   end
 
+  test "it should NOT report violation for test root module" do
+    """
+    defmodule BarTest do
+    end
+    """
+    |> to_source_file("test/bar/bar_test.exs")
+    |> refute_issues(@described_check)
+  end
+
   test "it should NOT report violation for PascalCase nested module" do
     """
     defmodule FooWeb.BarWeb do
