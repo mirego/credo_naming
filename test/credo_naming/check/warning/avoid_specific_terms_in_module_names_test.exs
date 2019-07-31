@@ -59,4 +59,39 @@ defmodule CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNamesTest do
     |> to_source_file
     |> assert_issue(@described_check, terms: ["Helpers"])
   end
+
+  test "it should report a violation in a module with mixed case" do
+    """
+    defmodule App.Helper.Error do
+    end
+    """
+    |> to_source_file
+    |> assert_issue(@described_check, terms: ["helper"])
+  end
+
+  test "it should report a violation in a module matching a regular expression" do
+    """
+    defmodule App.Helper.Error do
+    end
+    """
+    |> to_source_file
+    |> assert_issue(@described_check, terms: ["Manager", ~r/^helpers?$/i])
+  end
+
+  #
+  # configuration raising errors
+  #
+
+  test "it should raise an error when a non-String or non-Regex is used as a term" do
+    run_check = fn ->
+      """
+      defmodule App.Helper.Error do
+      end
+      """
+      |> to_source_file
+      |> assert_issue(@described_check, terms: ["Manager", ~r/^helpers?$/i, 42])
+    end
+
+    assert_raise RuntimeError, "The \"terms\" config expected each term to be a String or Regex, got: 42", run_check
+  end
 end
