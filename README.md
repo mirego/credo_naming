@@ -14,7 +14,7 @@ Add the `:credo_naming` package to your `mix.exs` dependencies:
 ```elixir
 def deps do
   [
-    {:credo_naming, "~> 0.3", only: [:dev, :test], runtime: false}
+    {:credo_naming, "~> 0.4", only: [:dev, :test], runtime: false}
   ]
 end
 ```
