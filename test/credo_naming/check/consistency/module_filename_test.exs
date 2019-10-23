@@ -132,6 +132,15 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> refute_issues(@described_check)
   end
 
+  test "it should NOT report violation for a file called stdin" do
+    """
+    defmodule Foo.Bar do
+    end
+    """
+    |> to_source_file("stdin")
+    |> refute_issues(@described_check)
+  end
+
   #
   # cases raising issues
   #
