@@ -7,6 +7,7 @@
         included: ["*.exs", "lib/", "test/", "config/"],
         excluded: []
       },
+      requires: ["lib/"],
       checks: [
         {Credo.Check.Consistency.ExceptionNames},
         {Credo.Check.Consistency.LineEndings},
@@ -51,7 +52,9 @@
         {Credo.Check.Warning.UnusedListOperation},
         {Credo.Check.Warning.UnusedStringOperation},
         {Credo.Check.Warning.UnusedTupleOperation},
-        {Credo.Check.Warning.OperationWithConstantResult}
+        {Credo.Check.Warning.OperationWithConstantResult},
+        {CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames, terms: ["Manager", "Fetcher", "Builder", "Persister", "Serializer", ~r/^Helpers?$/i, ~r/^Utils?$/i]},
+        {CredoNaming.Check.Consistency.ModuleFilename, excluded_paths: ["config", "mix.exs", "priv", "test/support"]}
       ]
     }
   ]

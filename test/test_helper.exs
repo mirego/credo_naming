@@ -19,6 +19,7 @@ exclude = Keyword.merge([to_be_implemented: true], check_version)
 
 ExUnit.configure(exclude: exclude)
 
+# credo:disable-for-next-line CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames
 defmodule Credo.TestHelper do
   defmacro __using__(_) do
     quote do

@@ -44,6 +44,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
 
     source_file.filename
     |> String.starts_with?(excluded_paths)
+    |> Kernel.||(source_file.filename === "stdin")
     |> if do
       []
     else
