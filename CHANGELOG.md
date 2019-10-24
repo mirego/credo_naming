@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.1] - 2019-10-24
+
+- Exclude `stdin` source files for `ModuleFilename` (because we cannot check consistency between module and filename when we have no filename)
+
+## [0.4.0] - 2019-07-31
+
+- Add regex term support in `AvoidSpecificTermsInModuleNames` check
+
 ## [0.3.1] - 2019-06-19
 
 - Improve documentation
