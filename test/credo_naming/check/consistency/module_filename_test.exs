@@ -141,6 +141,23 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> refute_issues(@described_check)
   end
 
+  test "it should NOT report violation for a custom filename callback" do
+    """
+    defmodule Foo.Bar do
+    end
+    """
+    |> to_source_file("lib/foo/dont_care.ex")
+    |> refute_issues(@described_check,
+      valid_filename_callback: fn filename, _module_name, _opts ->
+        if filename == "lib/foo/dont_care.ex" do
+          {true, []}
+        else
+          {false, []}
+        end
+      end
+    )
+  end
+
   #
   # cases raising issues
   #
@@ -205,5 +222,22 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     """
     |> to_source_file("lib/foo/bar.ex")
     |> assert_issue(@described_check)
+  end
+
+  test "it should report a violation with custom filename callback" do
+    """
+    defmodule Foo.Bar do
+    end
+    """
+    |> to_source_file("lib/foo/bar.ex")
+    |> assert_issue(@described_check,
+      valid_filename_callback: fn _filename, module_name, _opts ->
+        if module_name == "Foo.Bar" do
+          {false, ["lib/foo/bar_yes.ex"]}
+        else
+          {true, []}
+        end
+      end
+    )
   end
 end

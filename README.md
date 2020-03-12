@@ -98,10 +98,51 @@ defmodule MyAppGraphQL do
 end
 ```
 
+#### Naming conventions
+
+By default, the check allows for a specific list of valid filenames when a single module is declared within a file. You can overwrite this behaviour by providing the `valid_filename_callback` option and implement yourself if a filename should be considered valid.
+
+The callback receives three arguments:
+
+- `filename`, the stringified name of the module contained in the file (eg. `"lib/my_app/foo/bar.ex"`)
+- `module_name`, the stringified name of the module contained in the file (eg. `"MyApp.Foo.Bar"`)
+- `opts`, the options list passed to the check (eg. `[acronyms: [{"GraphQL", "graphql"}]]`)
+
+And must return a tuple containing a boolean value (if the filename is considered valid) and a list of expected filenames.
+
+In this (very simple) example, a file `lib/my_app/wrong.ex` that defines a `MyApp.Foo.Bar` module would return a `{false, ["lib/my_app/foo/bar.ex"]}` tuple.
+
+```elixir
+def valid_filename?(filename, module_name, _opts) do
+  root_path = CredoNaming.Check.Consistency.ModuleFilename.root_path(filename)
+  path = "#{Macro.underscore(module_name)}#{Path.extname(filename)}"
+
+  filenames = [
+    Path.join([root_path, path])
+  ]
+
+  {filename in filenames, filenames}
+end
+
+{CredoNaming.Check.Consistency.ModuleFilename, valid_filename_callback: &valid_filename/3}
+```
+
+You could also use the callback to ignore specific files and fallback on the default callback for others.
+
+```elixir
+def valid_filename?("lib/my_app/my_specific_file.ex", _module_name, _opts), do: {true, []}
+def valid_filename?("lib/my_app/my_other_specific_file.ex", _module_name, _opts), do: {true, []}
+def valid_filename?(filename, module_name, opts), do: CredoNaming.Check.Consistency.ModuleFilename.valid_filename?(filename, module_name, opts)
+
+{CredoNaming.Check.Consistency.ModuleFilename, valid_filename_callback: &valid_filename/3}
+```
+
+In the future, there may be some “naming convention flavours” (eg. `:default`, `:phoenix`, etc.) to use instead of having to implement your own callback.
+
 ## Contributors
 
-* Rémi Prévost ([@remiprev](https://github.com/remiprev))
-* Tomáš Janoušek ([@liskin](https://github.com/liskin))
+- Rémi Prévost ([@remiprev](https://github.com/remiprev))
+- Tomáš Janoušek ([@liskin](https://github.com/liskin))
 
 ## License
 

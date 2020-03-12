@@ -39,7 +39,6 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   @doc false
   def run(source_file, params \\ []) do
     excluded_paths = Keyword.get(params, :excluded_paths, [])
-    acronyms = Keyword.get(params, :acronyms, [])
     issue_meta = IssueMeta.for(source_file, params)
 
     source_file.filename
@@ -51,30 +50,37 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       source_file
       |> Credo.SourceFile.ast()
       |> root_modules()
-      |> issues(issue_meta, source_file, acronyms)
+      |> issues(issue_meta, source_file, params)
     end
   end
 
-  defp issues([{module_name, line_no}], issue_meta, source_file, acronyms) do
-    root = root_path(source_file.filename)
-    extension = Path.extname(source_file.filename)
-    expected_filenames = valid_filenames(module_name, root, extension, acronyms)
-
-    if source_file.filename in expected_filenames do
-      []
-    else
-      [issue_for(issue_meta, line_no, source_file, expected_filenames, module_name)]
-    end
+  @doc "Returns whether the filename matches the module defined in it."
+  def valid_filename?(filename, module_name, opts) do
+    expected_filenames = valid_filenames(filename, module_name, opts)
+    {filename in expected_filenames, expected_filenames}
   end
 
-  defp issues(_, _, _, _), do: []
-
-  defp root_path(filename) do
+  @doc "Returns the root path of a file, with support for umbrella projects"
+  def root_path(filename) do
     case Path.split(filename) do
       ["apps", app, root | _] -> Path.join(["apps", app, root])
       [root | _] -> root
     end
   end
+
+  defp issues([{module_name, line_no}], issue_meta, source_file, opts) do
+    callback = Keyword.get(opts, :valid_filename_callback, &valid_filename?/3)
+
+    case callback.(source_file.filename, module_name, opts) do
+      {true, _} ->
+        []
+
+      {false, expected_filenames} ->
+        [issue_for(issue_meta, line_no, source_file, expected_filenames, module_name)]
+    end
+  end
+
+  defp issues(_, _, _, _), do: []
 
   defp root_modules({:__block__, _, statements}) do
     Enum.flat_map(statements, &root_modules/1)
@@ -106,7 +112,12 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     )
   end
 
-  defp valid_filenames(module, root, extension, acronyms) when is_binary(module) do
+  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
+  defp valid_filenames(filename, module, opts) when is_binary(module) do
+    root = root_path(filename)
+    extension = Path.extname(filename)
+    acronyms = Keyword.get(opts, :acronyms, [])
+
     parts =
       module
       |> replace_acronyms(acronyms)
