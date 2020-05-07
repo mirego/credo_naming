@@ -240,4 +240,25 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
       end
     )
   end
+
+  test "it should report a violation with custom filename callback using {mod, fun}" do
+    defmodule Validator do
+      def validate(_filename, module_name, _opts) do
+        if module_name == "Foo.Bar" do
+          {false, ["lib/foo/bar_yes.ex"]}
+        else
+          {true, []}
+        end
+      end
+    end
+
+    """
+    defmodule Foo.Bar do
+    end
+    """
+    |> to_source_file("lib/foo/bar.ex")
+    |> assert_issue(@described_check,
+      valid_filename_callback: {Validator, :validate}
+    )
+  end
 end

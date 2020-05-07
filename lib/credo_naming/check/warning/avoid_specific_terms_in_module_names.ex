@@ -1,38 +1,42 @@
 defmodule CredoNaming.Check.Warning.AvoidSpecificTermsInModuleNames do
-  @moduledoc false
+  use Credo.Check,
+    base_priority: :low,
+    tags: [:naming],
+    explanations: [
+      check: """
+      In an effort to encourage more accurate module naming practices, it is
+      sometimes useful to maintain a list of terms to avoid in module names.
 
-  @checkdoc """
-  In an effort to encourage more accurate module naming practices, it is
-  sometimes useful to maintain a list of terms to avoid in module names.
+      For example, if the list of terms to avoid is ["Manager", "Fetcher"]:
 
-  For example, if the list of terms to avoid is ["Manager", "Fetcher"]:
+          # preferred
 
-      # preferred
+          defmodule Accounts do
+          end
 
-      defmodule Accounts do
-      end
+          defmodule App.Networking do
+          end
 
-      defmodule App.Networking do
-      end
+          # NOT preferred
 
-      # NOT preferred
+          defmodule AccountManager do
+          end
 
-      defmodule AccountManager do
-      end
-
-      defmodule App.DataFetcher do
-      end
-  """
-  @explanation [check: @checkdoc]
-
-  use Credo.Check, base_priority: :low
+          defmodule App.DataFetcher do
+          end
+      """,
+      params: [
+        terms: "A list of terms to avoid"
+      ]
+    ],
+    param_defaults: [terms: []]
 
   alias Credo.Code
   alias Credo.Code.Name
 
   @doc false
   def run(source_file, params \\ []) do
-    terms = Keyword.get(params, :terms, [])
+    terms = Params.get(params, :terms, __MODULE__)
 
     issue_meta = IssueMeta.for(source_file, params)
 
