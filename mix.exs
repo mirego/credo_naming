@@ -27,7 +27,7 @@ defmodule CredoNaming.MixProject do
 
   defp deps do
     [
-      {:credo, "~> 1.0"},
+      {:credo, "~> 1.4"},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end

@@ -1,44 +1,50 @@
 defmodule CredoNaming.Check.Consistency.ModuleFilename do
-  @moduledoc false
+  use Credo.Check,
+    base_priority: :low,
+    tags: [:naming],
+    explanations: [
+      check: """
+      If a file contains a single module, its filename should match the name of the module.
 
-  @checkdoc """
-  If a file contains a single module, its filename should match the name of the module.
+          # preferred
 
-      # preferred
+          # lib/foo/bar.exs
+          defmodule Foo.Bar, do: nil
 
-      # lib/foo/bar.exs
-      defmodule Foo.Bar, do: nil
+          # lib/foo/bar/bar.exs
+          defmodule Foo.Bar, do: nil
 
-      # lib/foo/bar/bar.exs
-      defmodule Foo.Bar, do: nil
+          # lib/foo/foo.exs
+          defmodule Foo, do: nil
 
-      # lib/foo/foo.exs
-      defmodule Foo, do: nil
+          # lib/foo.exs
+          defmodule Foo, do: nil
 
-      # lib/foo.exs
-      defmodule Foo, do: nil
+          # lib/foo/exceptions.exs
+          defmodule Foo.FirstException, do: nil
+          defmodule Foo.SecondException, do: nil
 
-      # lib/foo/exceptions.exs
-      defmodule Foo.FirstException, do: nil
-      defmodule Foo.SecondException, do: nil
+          # NOT preferred
 
-      # NOT preferred
+          # lib/foo.exs
+          defmodule Bar, do: nil
 
-      # lib/foo.exs
-      defmodule Bar, do: nil
-
-      # lib/foo/schemas/bar.exs
-      defmodule Foo.Bar, do: nil
-  """
-  @explanation [check: @checkdoc]
-
-  use Credo.Check, base_priority: :low
+          # lib/foo/schemas/bar.exs
+          defmodule Foo.Bar, do: nil
+      """,
+      params: [
+        excluded_paths: "A list of paths to exclude",
+        acronymes: "A list of tuples that map a module term to its path version, eg. [{\"MyAppGraphQL\", \"myapp_graphql\"}]",
+        valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines"
+      ]
+    ],
+    param_defaults: [excluded_paths: [], acronyms: [], valid_filename_callback: {__MODULE__, :valid_filename?}]
 
   alias Credo.Code
 
   @doc false
   def run(source_file, params \\ []) do
-    excluded_paths = Keyword.get(params, :excluded_paths, [])
+    excluded_paths = Params.get(params, :excluded_paths, __MODULE__)
     issue_meta = IssueMeta.for(source_file, params)
 
     source_file.filename
@@ -55,8 +61,8 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   end
 
   @doc "Returns whether the filename matches the module defined in it."
-  def valid_filename?(filename, module_name, opts) do
-    expected_filenames = valid_filenames(filename, module_name, opts)
+  def valid_filename?(filename, module_name, params) do
+    expected_filenames = valid_filenames(filename, module_name, params)
     {filename in expected_filenames, expected_filenames}
   end
 
@@ -68,10 +74,17 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     end
   end
 
-  defp issues([{module_name, line_no}], issue_meta, source_file, opts) do
-    callback = Keyword.get(opts, :valid_filename_callback, &valid_filename?/3)
+  defp issues([{module_name, line_no}], issue_meta, source_file, params) do
+    params
+    |> Params.get(:valid_filename_callback, __MODULE__)
+    |> case do
+      {mod, fun} ->
+        apply(mod, fun, [source_file.filename, module_name, params])
 
-    case callback.(source_file.filename, module_name, opts) do
+      fun ->
+        fun.(source_file.filename, module_name, params)
+    end
+    |> case do
       {true, _} ->
         []
 
@@ -113,10 +126,10 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   end
 
   # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
-  defp valid_filenames(filename, module, opts) when is_binary(module) do
+  defp valid_filenames(filename, module, params) when is_binary(module) do
     root = root_path(filename)
     extension = Path.extname(filename)
-    acronyms = Keyword.get(opts, :acronyms, [])
+    acronyms = Params.get(params, :acronyms, __MODULE__)
 
     parts =
       module
