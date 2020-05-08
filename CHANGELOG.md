@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.6.0] - 2020-05-07
+
+- Add Credo 1.4-specific features [#12](https://github.com/mirego/credo_naming/pull/12)
+
+## [0.5.0] - 2020-03-12
+
+- Add support for a “valid_filename_callback” option `ModuleFilename` check [#8](https://github.com/mirego/credo_naming/pull/8)
+
 ## [0.4.1] - 2019-10-24
 
 - Exclude `stdin` source files for `ModuleFilename` (because we cannot check consistency between module and filename when we have no filename)
