@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.6.1] - 2020-05-08
+
+- Add missing changelog entries
+
 ## [0.6.0] - 2020-05-07
 
 - Add Credo 1.4-specific features [#12](https://github.com/mirego/credo_naming/pull/12)
