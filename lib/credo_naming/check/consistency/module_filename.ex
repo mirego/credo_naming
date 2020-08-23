@@ -34,7 +34,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       """,
       params: [
         excluded_paths: "A list of paths to exclude",
-        acronymes: "A list of tuples that map a module term to its path version, eg. [{\"MyAppGraphQL\", \"myapp_graphql\"}]",
+        acronyms: "A list of tuples that map a module term to its path version, eg. [{\"MyAppGraphQL\", \"myapp_graphql\"}]",
         valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines"
       ]
     ],
