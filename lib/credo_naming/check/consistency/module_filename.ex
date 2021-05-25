@@ -35,11 +35,10 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       params: [
         excluded_paths: "A list of paths to exclude",
         acronyms: "A list of tuples that map a module term to its path version, eg. [{\"MyAppGraphQL\", \"myapp_graphql\"}]",
-        valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines",
-        preset: "Choose a custom validation according to commom project structures, such as :phoenix"
+        valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines"
       ]
     ],
-    param_defaults: [excluded_paths: [], acronyms: [], valid_filename_callback: {__MODULE__, :valid_filename?}, preset: nil]
+    param_defaults: [excluded_paths: [], acronyms: [], valid_filename_callback: {__MODULE__, :valid_filename?}]
 
   alias Credo.Code
 
@@ -62,10 +61,8 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   end
 
   @doc "Returns whether the filename matches the module defined in it."
-  def valid_filename?(filename, module_name, params) do
-    expected_filenames = valid_filenames(filename, module_name, params)
-    preset_filenames = params |> Params.get(:preset, __MODULE__) |> valid_preset_filename(filename, module_name)
-    expected_filenames = expected_filenames ++ preset_filenames
+  def valid_filename?(filename, module_name, _params) do
+    expected_filenames = valid_preset_filename(filename, module_name)
 
     {filename in expected_filenames, expected_filenames}
   end
@@ -129,47 +126,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     )
   end
 
-  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
-  defp valid_filenames(filename, module, params) when is_binary(module) do
-    root = root_path(filename)
-    extension = Path.extname(filename)
-    acronyms = Params.get(params, :acronyms, __MODULE__)
-
-    parts =
-      module
-      |> replace_acronyms(acronyms)
-      |> Macro.underscore()
-      |> Path.split()
-
-    filenames =
-      parts
-      |> Enum.with_index()
-      |> Enum.map(fn {_, index} ->
-        parts
-        |> Enum.split(index)
-        |> merge_filename_parts()
-        |> Enum.reject(&match?("", &1))
-        |> Path.join()
-        |> (&"#{root}/#{&1}#{extension}").()
-      end)
-      |> Enum.reverse()
-
-    [shortest_filename | _] = filenames
-
-    # We want to support a `Foo` module in either `lib/foo.ex` or
-    # `lib/foo/foo.ex`. We also want to strip any `_test` directory suffix
-    # because we might define a `FooTest` module in `test/foo/foo_test.exs`.
-    duplicated_filename =
-      shortest_filename
-      |> String.replace(~r/\/([^.\/]+)(\..+)$/, "/\\1/\\1\\2")
-      |> String.replace(~r/_test\//, "/")
-
-    [duplicated_filename | filenames]
-  end
-
-  defp valid_preset_filename(nil, _, _), do: []
-
-  defp valid_preset_filename(:phoenix, filename, module_name) do
+  defp valid_preset_filename(filename, module_name) do
     extension = Path.extname(filename)
     root_path = root_path(filename)
 
@@ -181,8 +138,6 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     [Path.join([root_path, valid_module_path_name <> extension])]
   end
 
-  defp valid_preset_filename(_, _, _), do: raise("preset not recognized")
-
   defp maybe_insert_web_resource(module_part_list, resource_type) do
     path = Enum.at(module_part_list, 0)
     file_name = Enum.at(module_part_list, -1)
@@ -193,32 +148,4 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       module_part_list
     end
   end
-
-  defp merge_filename_parts({[], file_parts}), do: merge_filename_parts({[""], file_parts})
-
-  defp merge_filename_parts({directory_parts, []}),
-    do: merge_filename_parts({directory_parts, [""]})
-
-  defp merge_filename_parts({directory_parts, file_parts}) do
-    [
-      Path.join(directory_parts),
-      Enum.join(file_parts, ".")
-    ]
-  end
-
-  defp replace_acronyms(module, acronyms) do
-    Enum.reduce(acronyms, module, &process_acronym/2)
-  end
-
-  defp process_acronym(string, acc) when is_binary(string) do
-    downcase_string = String.downcase(string)
-    String.replace(acc, string, downcase_string)
-  end
-
-  defp process_acronym({string, processed_string}, acc) do
-    downcase_string = String.downcase(processed_string)
-    String.replace(acc, string, downcase_string)
-  end
-
-  defp process_acronym(_, acc), do: acc
 end
