@@ -35,10 +35,11 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       params: [
         excluded_paths: "A list of paths to exclude",
         acronyms: "A list of tuples that map a module term to its path version, eg. [{\"MyAppGraphQL\", \"myapp_graphql\"}]",
-        valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines"
+        valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines",
+        preset: "Choose a custom validation according to commom project structures, such as :phoenix"
       ]
     ],
-    param_defaults: [excluded_paths: [], acronyms: [], valid_filename_callback: {__MODULE__, :valid_filename?}]
+    param_defaults: [excluded_paths: [], acronyms: [], valid_filename_callback: {__MODULE__, :valid_filename?}, preset: nil]
 
   alias Credo.Code
 
@@ -63,6 +64,9 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   @doc "Returns whether the filename matches the module defined in it."
   def valid_filename?(filename, module_name, params) do
     expected_filenames = valid_filenames(filename, module_name, params)
+    preset_filenames = params |> Params.get(:preset, __MODULE__) |> valid_preset_filename(filename, module_name)
+    expected_filenames = expected_filenames ++ preset_filenames
+
     {filename in expected_filenames, expected_filenames}
   end
 
@@ -161,6 +165,33 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       |> String.replace(~r/_test\//, "/")
 
     [duplicated_filename | filenames]
+  end
+
+  defp valid_preset_filename(nil, _, _), do: []
+
+  defp valid_preset_filename(:phoenix, filename, module_name) do
+    extension = Path.extname(filename)
+    root_path = root_path(filename)
+
+    module_part_list = module_name |> String.split(".") |> Enum.map(&Macro.underscore/1)
+    module_part_list = maybe_insert_web_resource(module_part_list, "controller")
+    module_part_list = maybe_insert_web_resource(module_part_list, "view")
+    valid_module_path_name = Enum.join(module_part_list, "/")
+
+    [Path.join([root_path, valid_module_path_name <> extension])]
+  end
+
+  defp valid_preset_filename(_, _, _), do: raise("preset not recognized")
+
+  defp maybe_insert_web_resource(module_part_list, resource_type) do
+    path = Enum.at(module_part_list, 0)
+    file_name = Enum.at(module_part_list, -1)
+
+    if String.ends_with?(path, "_web") and String.ends_with?(file_name, "_#{resource_type}") do
+      List.insert_at(module_part_list, 1, resource_type <> "s")
+    else
+      module_part_list
+    end
   end
 
   defp merge_filename_parts({[], file_parts}), do: merge_filename_parts({[""], file_parts})
