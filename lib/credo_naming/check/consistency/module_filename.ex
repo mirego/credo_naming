@@ -61,8 +61,8 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   end
 
   @doc "Returns whether the filename matches the module defined in it."
-  def valid_filename?(filename, module_name, _params) do
-    expected_filenames = valid_preset_filename(filename, module_name)
+  def valid_filename?(filename, module_name, params) do
+    expected_filenames = valid_filenames(filename, module_name, params)
 
     {filename in expected_filenames, expected_filenames}
   end
@@ -126,11 +126,12 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     )
   end
 
-  defp valid_preset_filename(filename, module_name) do
+  defp valid_filenames(filename, module_name, params) do
+    acronyms = Params.get(params, :acronyms, __MODULE__)
     extension = Path.extname(filename)
     root_path = root_path(filename)
 
-    module_part_list = module_name |> String.split(".") |> Enum.map(&Macro.underscore/1)
+    module_part_list = module_name |> replace_acronyms(acronyms) |> String.split(".") |> Enum.map(&Macro.underscore/1)
     module_part_list = maybe_insert_web_resource(module_part_list, "controller")
     module_part_list = maybe_insert_web_resource(module_part_list, "view")
     valid_module_path_name = Enum.join(module_part_list, "/")
@@ -148,4 +149,20 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       module_part_list
     end
   end
+
+  defp replace_acronyms(module, acronyms) do
+    Enum.reduce(acronyms, module, &process_acronym/2)
+  end
+
+  defp process_acronym(string, acc) when is_binary(string) do
+    downcase_string = String.downcase(string)
+    String.replace(acc, string, downcase_string)
+  end
+
+  defp process_acronym({string, processed_string}, acc) do
+    downcase_string = String.downcase(processed_string)
+    String.replace(acc, string, downcase_string)
+  end
+
+  defp process_acronym(_, acc), do: acc
 end
