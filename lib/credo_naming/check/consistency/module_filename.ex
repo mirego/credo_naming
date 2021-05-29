@@ -132,8 +132,11 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     root_path = root_path(filename)
 
     module_part_list = module_name |> replace_acronyms(acronyms) |> String.split(".") |> Enum.map(&Macro.underscore/1)
+
+    # phoenix specific call that appends "controller" or "view" to the path
     module_part_list = maybe_insert_web_resource(module_part_list, "controller")
     module_part_list = maybe_insert_web_resource(module_part_list, "view")
+
     valid_module_path_name = Enum.join(module_part_list, "/")
 
     [Path.join([root_path, valid_module_path_name <> extension])]
@@ -143,7 +146,12 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     path = Enum.at(module_part_list, 0)
     file_name = Enum.at(module_part_list, -1)
 
-    if String.ends_with?(path, "_web") and String.ends_with?(file_name, "_#{resource_type}") do
+    # we want to append the "resource_type" to the second path position
+    # if file ends with the resource type.
+    # So, in phoenix, will have: "/lib/app/controllers/my_controller" and the module as App.MyController.
+    # This module will put the pluralized "resource_type" at second position on the path
+    # generated from module's name
+    if String.ends_with?(path, "_web") and (String.ends_with?(file_name, "_#{resource_type}") or String.ends_with?(file_name, "_#{resource_type}_test")) do
       List.insert_at(module_part_list, 1, resource_type <> "s")
     else
       module_part_list
