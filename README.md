@@ -3,7 +3,7 @@
   <br /><br />
   <code>CredoNaming</code> is a suite of checks to enforce naming best practices in an Elixir project.
   <br /><br />
-  <a href="https://travis-ci.com/mirego/credo_naming"><img src="https://travis-ci.com/mirego/credo_naming.svg?branch=master" /></a>
+  <a href="https://github.com/mirego/credo_naming/actions?query=workflow%3ACI+branch%3Amaster+event%3Apush"><img src="https://github.com/mirego/credo_naming/workflows/CI/badge.svg?branch=master&event=push" /></a>
   <a href="https://hex.pm/packages/credo_naming"><img src="https://img.shields.io/hexpm/v/credo_naming.svg" /></a>
 </p>
 
