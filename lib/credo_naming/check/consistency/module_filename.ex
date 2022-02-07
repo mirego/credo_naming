@@ -33,14 +33,21 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
           defmodule Foo.Bar, do: nil
       """,
       params: [
+        plugins: "A list of atoms for applying plugin specific naming (ex: :phoenix)",
         excluded_paths: "A list of paths to exclude",
         acronyms: "A list of tuples that map a module term to its path version, eg. [{\"MyAppGraphQL\", \"myapp_graphql\"}]",
         valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines"
       ]
     ],
-    param_defaults: [excluded_paths: [], acronyms: [], valid_filename_callback: {__MODULE__, :valid_filename?}]
+    param_defaults: [
+      plugins: [],
+      excluded_paths: [],
+      acronyms: [],
+      valid_filename_callback: {__MODULE__, :valid_filename?}
+    ]
 
   alias Credo.Code
+  alias CredoNaming.Check.Consistency.ModuleFilename.Plugins
 
   @doc false
   def run(source_file, params \\ []) do
@@ -128,34 +135,19 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
 
   defp valid_filenames(filename, module_name, params) do
     acronyms = Params.get(params, :acronyms, __MODULE__)
+    plugins = Params.get(params, :plugins, __MODULE__)
     extension = Path.extname(filename)
     root_path = root_path(filename)
 
-    module_part_list = module_name |> replace_acronyms(acronyms) |> String.split(".") |> Enum.map(&Macro.underscore/1)
-
-    # phoenix specific call that appends "controller" or "view" to the path
-    module_part_list = maybe_insert_web_resource(module_part_list, "controller")
-    module_part_list = maybe_insert_web_resource(module_part_list, "view")
-
-    valid_module_path_name = Enum.join(module_part_list, "/")
+    valid_module_path_name =
+      module_name
+      |> replace_acronyms(acronyms)
+      |> String.split(".")
+      |> Enum.map(&Macro.underscore/1)
+      |> plugin_specific_names(plugins)
+      |> Enum.join("/")
 
     [Path.join([root_path, valid_module_path_name <> extension])]
-  end
-
-  defp maybe_insert_web_resource(module_part_list, resource_type) do
-    path = Enum.at(module_part_list, 0)
-    file_name = Enum.at(module_part_list, -1)
-
-    # we want to append the "resource_type" to the second path position
-    # if file ends with the resource type.
-    # So, in phoenix, will have: "/lib/app/controllers/my_controller" and the module as App.MyController.
-    # This module will put the pluralized "resource_type" at second position on the path
-    # generated from module's name
-    if String.ends_with?(path, "_web") and (String.ends_with?(file_name, "_#{resource_type}") or String.ends_with?(file_name, "_#{resource_type}_test")) do
-      List.insert_at(module_part_list, 1, resource_type <> "s")
-    else
-      module_part_list
-    end
   end
 
   defp replace_acronyms(module, acronyms) do
@@ -173,4 +165,10 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   end
 
   defp process_acronym(_, acc), do: acc
+
+  defp plugin_specific_names(paths, plugins) do
+    Enum.reduce(plugins, paths, fn plugin, path_result ->
+      Plugins.module_for_name(plugin).transform_paths(path_result)
+    end)
+  end
 end
