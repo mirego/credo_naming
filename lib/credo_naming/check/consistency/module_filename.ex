@@ -69,8 +69,8 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   @doc "Returns the root path of a file, with support for umbrella projects"
   def root_path(filename) do
     case Path.split(filename) do
-      ["apps", app, root | _] -> Path.join(["apps", app, root])
-      [root | _] -> root
+      ["apps", app, root | _] -> {Path.join(["apps", app, root]), app}
+      [root | _] -> {root, nil}
     end
   end
 
@@ -127,7 +127,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
 
   # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
   defp valid_filenames(filename, module, params) when is_binary(module) do
-    root = root_path(filename)
+    {root, app} = root_path(filename)
     extension = Path.extname(filename)
     acronyms = Params.get(params, :acronyms, __MODULE__)
 
@@ -136,6 +136,8 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       |> replace_acronyms(acronyms)
       |> Macro.underscore()
       |> Path.split()
+
+    parts = Enum.reject(parts, fn part -> part == app end)
 
     filenames =
       parts

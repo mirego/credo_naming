@@ -132,6 +132,15 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> refute_issues(@described_check)
   end
 
+  test "it should NOT report violation for nested module in umbrella app 2" do
+    """
+    defmodule Abc.Foo.Bar do
+    end
+    """
+    |> to_source_file("apps/abc/lib/foo/bar.ex")
+    |> refute_issues(@described_check)
+  end
+
   test "it should NOT report violation for a file called stdin" do
     """
     defmodule Foo.Bar do
