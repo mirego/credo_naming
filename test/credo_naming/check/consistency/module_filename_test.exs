@@ -25,12 +25,30 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> refute_issues(@described_check, acronyms: [{"MYAppGraphQL", "myapp_graphql"}])
   end
 
+  test "it should NOT report violation for nested module and duplicated name" do
+    """
+    defmodule Foo.Bar do
+    end
+    """
+    |> to_source_file("lib/foo/bar/bar.ex")
+    |> refute_issues(@described_check)
+  end
+
   test "it should NOT report violation for root module" do
     """
     defmodule BarTest do
     end
     """
     |> to_source_file("test/bar_test.exs")
+    |> refute_issues(@described_check)
+  end
+
+  test "it should NOT report violation for test root module" do
+    """
+    defmodule BarTest do
+    end
+    """
+    |> to_source_file("test/bar/bar_test.exs")
     |> refute_issues(@described_check)
   end
 
@@ -157,30 +175,12 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
   # cases raising issues
   #
 
-  test "it should report violation for nested module and duplicated name" do
-    """
-    defmodule Foo.Bar do
-    end
-    """
-    |> to_source_file("lib/foo/bar/bar.ex")
-    |> assert_issue(@described_check)
-  end
-
   test "it should report violation for PascalCase nested module with dot" do
     """
     defmodule FooWeb.Bar.Create do
     end
     """
     |> to_source_file("lib/foo_web/bar.create.ex")
-    |> assert_issue(@described_check)
-  end
-
-  test "it should report violation for test root module" do
-    """
-    defmodule BarTest do
-    end
-    """
-    |> to_source_file("test/bar/bar_test.exs")
     |> assert_issue(@described_check)
   end
 

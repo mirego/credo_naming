@@ -139,15 +139,26 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     extension = Path.extname(filename)
     root_path = root_path(filename)
 
-    valid_module_path_name =
+    base_module_paths =
       module_name
       |> replace_acronyms(acronyms)
       |> String.split(".")
       |> Enum.map(&Macro.underscore/1)
+
+    valid_module_path_name =
+      base_module_paths
       |> plugin_specific_names(plugins)
       |> Enum.join("/")
 
-    [Path.join([root_path, valid_module_path_name <> extension])]
+    context_repeated_path_names =
+      base_module_paths
+      |> context_file_naming()
+      |> Enum.join("/")
+
+    [
+      Path.join([root_path, valid_module_path_name <> extension]),
+      Path.join([root_path, context_repeated_path_names <> extension])
+    ]
   end
 
   defp replace_acronyms(module, acronyms) do
@@ -165,6 +176,18 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   end
 
   defp process_acronym(_, acc), do: acc
+
+  defp context_file_naming(paths) do
+    # This function duplicates the file name into the last folder name,
+    # used as a kind of index file for a context "my_app/context/context.ex".
+
+    # It also remove any "_test" suffix beffore appending, só the test file for
+    # "my_app/context/context.ex" will be "test/context/context_test.ex", not
+    # "test/context_test/context_test.ex"
+    last_path = paths |> Enum.at(-1) |> String.trim("_test")
+
+    List.insert_at(paths, -2, last_path)
+  end
 
   defp plugin_specific_names(paths, plugins) do
     Enum.reduce(plugins, paths, fn plugin, path_result ->
