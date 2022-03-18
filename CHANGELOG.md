@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [2.0.0] - 2022-03-18
+
+- BREAKING: Filenames with dots (`.`) in them no longer considers dots as separators. For example, a `FooWeb.Bar.Create` module should be defined in `lib/foo_web/bar/create.ex` or `lib/foo_web/bar/create/create.ex`. `lib/foo_web/bar.create.ex` is no longer valid for this module.
+
 ## [1.0.0] - 2020-10-06
 
 - Nothing new — just committing to a major version for semver benefits

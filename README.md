@@ -137,7 +137,7 @@ def valid_filename?(filename, module_name, opts), do: CredoNaming.Check.Consiste
 {CredoNaming.Check.Consistency.ModuleFilename, valid_filename_callback: &valid_filename/3}
 ```
 
-In the future, there may be some “naming convention flavours” (eg. `:default`, `:phoenix`, etc.) to use instead of having to implement your own callback.
+Instead of implementing your own `valid_filename_callback` function, you can use the `plugins` option to enforce a specific supported naming convention. For now, only `:phoenix` is supported.
 
 ## Contributors
 
