@@ -36,7 +36,7 @@ defmodule CredoNaming.MixProject do
   defp package do
     %{
       maintainers: ["Rémi Prévost"],
-      licenses: ["BSD-3"],
+      licenses: ["BSD-3-Clause"],
       links: %{
         "Changelog" => "#{@source_url}/blob/master/CHANGELOG.md",
         "GitHub" => @source_url
