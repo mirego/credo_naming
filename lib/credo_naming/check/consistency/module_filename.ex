@@ -33,14 +33,21 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
           defmodule Foo.Bar, do: nil
       """,
       params: [
+        plugins: "A list of atoms for applying plugin specific naming (ex: :phoenix)",
         excluded_paths: "A list of paths to exclude",
         acronyms: "A list of tuples that map a module term to its path version, eg. [{\"MyAppGraphQL\", \"myapp_graphql\"}]",
         valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines"
       ]
     ],
-    param_defaults: [excluded_paths: [], acronyms: [], valid_filename_callback: {__MODULE__, :valid_filename?}]
+    param_defaults: [
+      plugins: [],
+      excluded_paths: [],
+      acronyms: [],
+      valid_filename_callback: {__MODULE__, :valid_filename?}
+    ]
 
   alias Credo.Code
+  alias CredoNaming.Check.Consistency.ModuleFilename.Plugins
 
   @doc false
   def run(source_file, params \\ []) do
@@ -63,6 +70,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   @doc "Returns whether the filename matches the module defined in it."
   def valid_filename?(filename, module_name, params) do
     expected_filenames = valid_filenames(filename, module_name, params)
+
     {filename in expected_filenames, expected_filenames}
   end
 
@@ -125,53 +133,31 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     )
   end
 
-  # credo:disable-for-next-line Credo.Check.Refactor.ABCSize
-  defp valid_filenames(filename, module, params) when is_binary(module) do
-    root = root_path(filename)
-    extension = Path.extname(filename)
+  defp valid_filenames(filename, module_name, params) do
     acronyms = Params.get(params, :acronyms, __MODULE__)
+    plugins = Params.get(params, :plugins, __MODULE__)
+    extension = Path.extname(filename)
+    root_path = root_path(filename)
 
-    parts =
-      module
+    base_module_paths =
+      module_name
       |> replace_acronyms(acronyms)
-      |> Macro.underscore()
-      |> Path.split()
+      |> String.split(".")
+      |> Enum.map(&Macro.underscore/1)
 
-    filenames =
-      parts
-      |> Enum.with_index()
-      |> Enum.map(fn {_, index} ->
-        parts
-        |> Enum.split(index)
-        |> merge_filename_parts()
-        |> Enum.reject(&match?("", &1))
-        |> Path.join()
-        |> (&"#{root}/#{&1}#{extension}").()
-      end)
-      |> Enum.reverse()
+    valid_module_path_name =
+      base_module_paths
+      |> plugin_specific_names(plugins)
+      |> Enum.join("/")
 
-    [shortest_filename | _] = filenames
+    context_repeated_path_names =
+      base_module_paths
+      |> context_file_naming()
+      |> Enum.join("/")
 
-    # We want to support a `Foo` module in either `lib/foo.ex` or
-    # `lib/foo/foo.ex`. We also want to strip any `_test` directory suffix
-    # because we might define a `FooTest` module in `test/foo/foo_test.exs`.
-    duplicated_filename =
-      shortest_filename
-      |> String.replace(~r/\/([^.\/]+)(\..+)$/, "/\\1/\\1\\2")
-      |> String.replace(~r/_test\//, "/")
-
-    [duplicated_filename | filenames]
-  end
-
-  defp merge_filename_parts({[], file_parts}), do: merge_filename_parts({[""], file_parts})
-
-  defp merge_filename_parts({directory_parts, []}),
-    do: merge_filename_parts({directory_parts, [""]})
-
-  defp merge_filename_parts({directory_parts, file_parts}) do
     [
-      Path.join(directory_parts),
-      Enum.join(file_parts, ".")
+      Path.join([root_path, valid_module_path_name <> extension]),
+      Path.join([root_path, context_repeated_path_names <> extension])
     ]
   end
 
@@ -190,4 +176,22 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   end
 
   defp process_acronym(_, acc), do: acc
+
+  defp context_file_naming(paths) do
+    # This function duplicates the file name into the last folder name,
+    # used as a kind of index file for a context "my_app/context/context.ex".
+
+    # It also remove any "_test" suffix beffore appending, só the test file for
+    # "my_app/context/context.ex" will be "test/context/context_test.ex", not
+    # "test/context_test/context_test.ex"
+    last_path = paths |> Enum.at(-1) |> String.trim("_test")
+
+    List.insert_at(paths, -2, last_path)
+  end
+
+  defp plugin_specific_names(paths, plugins) do
+    Enum.reduce(plugins, paths, fn plugin, path_result ->
+      Plugins.module_for_name(plugin).transform_paths(path_result)
+    end)
+  end
 end

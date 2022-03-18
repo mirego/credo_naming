@@ -61,15 +61,6 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> refute_issues(@described_check)
   end
 
-  test "it should NOT report violation for PascalCase nested module with dot" do
-    """
-    defmodule FooWeb.Bar.Create do
-    end
-    """
-    |> to_source_file("lib/foo_web/bar.create.ex")
-    |> refute_issues(@described_check)
-  end
-
   test "it should NOT report violation for file with multiple modules" do
     """
     defmodule Foo.QueryException do
@@ -158,9 +149,40 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     )
   end
 
+  test "it should NOT report a violation when path is invalid for phoenix plugin but plugin is disabled" do
+    """
+    defmodule FooWeb.BarController do
+    end
+    """
+    |> to_source_file("lib/foo_web/bar_controller.ex")
+    |> refute_issues(@described_check,
+      plugins: []
+    )
+  end
+
+  test "it should NOT report a violation when path is valid for phoenix plugin" do
+    """
+    defmodule FooWeb.BarController do
+    end
+    """
+    |> to_source_file("lib/foo_web/controllers/bar_controller.ex")
+    |> refute_issues(@described_check,
+      plugins: [:phoenix]
+    )
+  end
+
   #
   # cases raising issues
   #
+
+  test "it should report violation for PascalCase nested module with dot" do
+    """
+    defmodule FooWeb.Bar.Create do
+    end
+    """
+    |> to_source_file("lib/foo_web/bar.create.ex")
+    |> assert_issue(@described_check)
+  end
 
   test "it should report a violation for wrong module name" do
     """
@@ -259,6 +281,28 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> to_source_file("lib/foo/bar.ex")
     |> assert_issue(@described_check,
       valid_filename_callback: {Validator, :validate}
+    )
+  end
+
+  test "it should report a violation when phoenix plugin is set and path is invalid" do
+    """
+    defmodule FooWeb.BarController do
+    end
+    """
+    |> to_source_file("lib/foo_web/controllers/some_another_controller.ex")
+    |> assert_issue(@described_check,
+      plugins: [:phoenix]
+    )
+  end
+
+  test "it should report a violation when path is valid for phoenix plugin but plugin is disabled" do
+    """
+    defmodule FooWeb.BarController do
+    end
+    """
+    |> to_source_file("lib/foo_web/controllers/bar_controller.ex")
+    |> assert_issue(@described_check,
+      plugins: []
     )
   end
 end
