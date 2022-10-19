@@ -51,12 +51,24 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
 
   @doc false
   def run(source_file, params \\ []) do
-    excluded_paths = Params.get(params, :excluded_paths, __MODULE__)
+    {string_excluded_paths, excluded_regex} =
+      params
+      |> Params.get(params, :excluded_paths, __MODULE__)
+      |> Enum.split_with(fn
+        %Regex{} -> true
+        _string -> false
+      end)
+
     issue_meta = IssueMeta.for(source_file, params)
 
-    source_file.filename
-    |> String.starts_with?(excluded_paths)
-    |> Kernel.||(source_file.filename === "stdin")
+    filename = source_file.filename
+
+    excluded_by_reqex = Enum.reduce_while(excluded_regex, false, fn regex, acc -> if Regex.match?(regex, filename), do: {:halt, true}, else: {:cont, false} end)
+
+    filename
+    |> String.starts_with?(string_excluded_paths)
+    |> Kernel.||(excluded_by_reqex)
+    |> Kernel.||(filename === "stdin")
     |> if do
       []
     else
@@ -80,6 +92,10 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
       ["apps", app, root | _] -> Path.join(["apps", app, root])
       [root | _] -> root
     end
+  end
+
+  defp matches_excluded_regex(filename, excluded_regex) do
+    Enum.reduce_while(excluded_regex, fn regex, acc -> Regex.match(regex, filename) end)
   end
 
   defp issues([{module_name, line_no}], issue_meta, source_file, params) do
