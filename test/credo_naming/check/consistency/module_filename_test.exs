@@ -180,6 +180,15 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> refute_issues(@described_check, excluded_paths: [~r/foo*/])
   end
 
+  test "it should NOT report if excluded by regex 2 w" do
+    """
+    defmodule Bar do
+    end
+    """
+    |> to_source_file("lib/foo/bar.exs")
+    |> refute_issues(@described_check, excluded_paths: [~r/bar.exs/])
+  end
+
   test "it should NOT report if excluded by regex or string path" do
     """
     defmodule MyApp.Case do

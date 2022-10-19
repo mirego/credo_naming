@@ -76,6 +76,12 @@ You can exclude files or paths with the `excluded_paths` option:
 {CredoNaming.Check.Consistency.ModuleFilename, excluded_paths: ["test/support", "priv", "rel", "mix.exs"]}
 ```
 
+You can also exclude files or paths with regex:
+
+```elixir
+{CredoNaming.Check.Consistency.ModuleFilename, excluded_paths: [~r/test\/support/, ~r/priv/, ~r/.exs/]}
+```
+
 #### Acronyms
 
 The check converts module names to paths using `PascalCase` convention, which means that the file `lib/myapp_graphql.ex` is expected to define the module:
