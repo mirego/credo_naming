@@ -51,12 +51,24 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
 
   @doc false
   def run(source_file, params \\ []) do
-    excluded_paths = Params.get(params, :excluded_paths, __MODULE__)
+    {exclude_regex, string_excluded_paths} =
+      params
+      |> Params.get(:excluded_paths, __MODULE__)
+      |> Enum.split_with(fn
+        %Regex{} -> true
+        _string -> false
+      end)
+
     issue_meta = IssueMeta.for(source_file, params)
 
-    source_file.filename
-    |> String.starts_with?(excluded_paths)
-    |> Kernel.||(source_file.filename === "stdin")
+    filename = source_file.filename
+
+    excluded_by_regex = Enum.reduce_while(exclude_regex, false, fn regex, _acc -> if Regex.match?(regex, filename), do: {:halt, true}, else: {:cont, false} end)
+
+    filename
+    |> String.starts_with?(string_excluded_paths)
+    |> Kernel.||(excluded_by_regex)
+    |> Kernel.||(filename === "stdin")
     |> if do
       []
     else
