@@ -150,6 +150,7 @@ Instead of implementing your own `valid_filename_callback` function, you can use
 - Rémi Prévost ([@remiprev](https://github.com/remiprev))
 - Tomáš Janoušek ([@liskin](https://github.com/liskin))
 - Felipe Duzzi ([@duzzifelipe](https://github.com/duzzifelipe))
+- Daniel Willeitner ([@D-Town44](https://github.com/D-Town44))
 
 ## License
 
