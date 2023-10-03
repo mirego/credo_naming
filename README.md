@@ -3,7 +3,7 @@
   <br /><br />
   <code>CredoNaming</code> is a suite of checks to enforce naming best practices in an Elixir project.
   <br /><br />
-  <a href="https://github.com/mirego/credo_naming/actions?query=workflow%3ACI+branch%3Amaster+event%3Apush"><img src="https://github.com/mirego/credo_naming/workflows/CI/badge.svg?branch=master&event=push" /></a>
+  <a href="https://github.com/mirego/credo_naming/actions?query=workflow%3ACI+branch%3Amain+event%3Apush"><img src="https://github.com/mirego/credo_naming/workflows/CI/badge.svg?branch=master&event=push" /></a>
   <a href="https://hex.pm/packages/credo_naming"><img src="https://img.shields.io/hexpm/v/credo_naming.svg" /></a>
 </p>
 
@@ -154,7 +154,7 @@ Instead of implementing your own `valid_filename_callback` function, you can use
 
 ## License
 
-`CredoNaming` is © 2019 [Mirego](https://www.mirego.com) and may be freely distributed under the [New BSD license](http://opensource.org/licenses/BSD-3-Clause). See the [`LICENSE.md`](https://github.com/mirego/credo_naming/blob/master/LICENSE.md) file.
+`CredoNaming` is © 2019 [Mirego](https://www.mirego.com) and may be freely distributed under the [New BSD license](http://opensource.org/licenses/BSD-3-Clause). See the [`LICENSE.md`](https://github.com/mirego/credo_naming/blob/main/LICENSE.md) file.
 
 The tag logo is based on [this lovely icon by Vectors Point](https://thenounproject.com/term/tag/2606427), from The Noun Project. Used under a [Creative Commons BY 3.0](http://creativecommons.org/licenses/by/3.0/) license.
 

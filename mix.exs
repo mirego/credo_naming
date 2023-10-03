@@ -38,7 +38,7 @@ defmodule CredoNaming.MixProject do
       maintainers: ["Rémi Prévost"],
       licenses: ["BSD-3-Clause"],
       links: %{
-        "Changelog" => "#{@source_url}/blob/master/CHANGELOG.md",
+        "Changelog" => "#{@source_url}/blob/main/CHANGELOG.md",
         "GitHub" => @source_url
       }
     }
