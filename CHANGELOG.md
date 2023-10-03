@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [2.0.2] - 2023-10-03
+
+- Add `app_paths` option in `CredoNaming.Check.Consistency.ModuleFilename` to provide custom umbrella project `apps` path [#27](https://github.com/mirego/credo_naming/pull/27)
+
+## [2.0.1] - 2022-10-20
+
+- Allow regular expressions in `CredoNaming.Check.Consistency.ModuleFilename` excluded paths [#26](https://github.com/mirego/credo_naming/pull/26)
+
 ## [2.0.0] - 2022-03-18
 
 - BREAKING: Filenames with dots (`.`) in them no longer considers dots as separators. For example, a `FooWeb.Bar.Create` module should be defined in `lib/foo_web/bar/create.ex` or `lib/foo_web/bar/create/create.ex`. `lib/foo_web/bar.create.ex` is no longer valid for this module.

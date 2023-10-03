@@ -159,6 +159,7 @@ In case you have an umbrella project and have set `apps_path` to something other
 - Tomáš Janoušek ([@liskin](https://github.com/liskin))
 - Felipe Duzzi ([@duzzifelipe](https://github.com/duzzifelipe))
 - Daniel Willeitner ([@D-Town44](https://github.com/D-Town44))
+- Daniel Reigada ([@DReigada](https://github.com/DReigada))
 
 ## License
 
