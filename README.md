@@ -145,6 +145,14 @@ def valid_filename?(filename, module_name, opts), do: CredoNaming.Check.Consiste
 
 Instead of implementing your own `valid_filename_callback` function, you can use the `plugins` option to enforce a specific supported naming convention. For now, only `:phoenix` is supported.
 
+#### Setting `apps_path`
+
+In case you have an umbrella project and have set `apps_path` to something other than `apps`, you can set the `apps_path` option to the correct path.
+
+```elixir
+{CredoNaming.Check.Consistency.ModuleFilename, apps_path: "my_apps_path"}
+```
+
 ## Contributors
 
 - Rémi Prévost ([@remiprev](https://github.com/remiprev))

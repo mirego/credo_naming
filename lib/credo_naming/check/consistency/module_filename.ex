@@ -36,14 +36,16 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
         plugins: "A list of atoms for applying plugin specific naming (ex: :phoenix)",
         excluded_paths: "A list of paths to exclude",
         acronyms: "A list of tuples that map a module term to its path version, eg. [{\"MyAppGraphQL\", \"myapp_graphql\"}]",
-        valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines"
+        valid_filename_callback: "A function (either `&fun/3` or `{module, fun}`) that will be called on each filename with the name of the module it defines",
+        apps_path: "The path to the apps folder in umbrella projects"
       ]
     ],
     param_defaults: [
       plugins: [],
       excluded_paths: [],
       acronyms: [],
-      valid_filename_callback: {__MODULE__, :valid_filename?}
+      valid_filename_callback: {__MODULE__, :valid_filename?},
+      apps_path: "apps"
     ]
 
   alias Credo.Code
@@ -87,9 +89,11 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
   end
 
   @doc "Returns the root path of a file, with support for umbrella projects"
-  def root_path(filename) do
+  def root_path(filename, params) do
+    apps_path = Params.get(params, :apps_path, __MODULE__)
+
     case Path.split(filename) do
-      ["apps", app, root | _] -> Path.join(["apps", app, root])
+      [^apps_path, app, root | _] -> Path.join([apps_path, app, root])
       [root | _] -> root
     end
   end
@@ -149,7 +153,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
     acronyms = Params.get(params, :acronyms, __MODULE__)
     plugins = Params.get(params, :plugins, __MODULE__)
     extension = Path.extname(filename)
-    root_path = root_path(filename)
+    root_path = root_path(filename, params)
 
     base_module_paths =
       module_name

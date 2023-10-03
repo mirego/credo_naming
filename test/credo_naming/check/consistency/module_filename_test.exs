@@ -123,6 +123,15 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     |> refute_issues(@described_check)
   end
 
+  test "it should NOT report a violation when apps_path is defined correctly" do
+    """
+    defmodule Foo.Bar do
+    end
+    """
+    |> to_source_file("backend/abc/lib/foo/bar.ex")
+    |> refute_issues(@described_check, apps_path: "backend")
+  end
+
   test "it should NOT report violation for a file called stdin" do
     """
     defmodule Foo.Bar do
@@ -243,6 +252,15 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     """
     |> to_source_file("lib/foo/schemas/bar.ex")
     |> assert_issue(@described_check)
+  end
+
+  test "it should report a violation when apps_path is defined incorrectly" do
+    """
+    defmodule Foo.Bar do
+    end
+    """
+    |> to_source_file("not_backend/abc/lib/foo/bar.ex")
+    |> assert_issue(@described_check, apps_path: "backend")
   end
 
   test "it should report a violation for missing PascalCase root module" do
