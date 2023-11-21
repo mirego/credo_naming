@@ -207,7 +207,10 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename do
 
   defp plugin_specific_names(paths, plugins) do
     Enum.reduce(plugins, paths, fn plugin, path_result ->
-      Plugins.module_for_name(plugin).transform_paths(path_result)
+      case Plugins.module_for_name(plugin) do
+        fun when is_function(fun) -> fun.(paths)
+        module when is_atom(module) -> module.transform_paths(path_result)
+      end
     end)
   end
 end

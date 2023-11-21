@@ -180,6 +180,22 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     )
   end
 
+  test "it should NOT report a violation when path is valid for custom function plugin" do
+    plugin_fun = fn
+      ["foo_api", "bar_controller"] -> ["foo_api", "controllers", "bar_controller"]
+      other -> other
+    end
+
+    """
+    defmodule FooApi.BarController do
+    end
+    """
+    |> to_source_file("lib/foo_api/controllers/bar_controller.ex")
+    |> refute_issues(@described_check,
+      plugins: [plugin_fun]
+    )
+  end
+
   test "it should NOT report if excluded by regex" do
     """
     defmodule Bar do
