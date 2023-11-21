@@ -19,7 +19,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename.PluginsTest do
 
     test "should raise when plugin doesn't exist" do
       assert_raise RuntimeError, "Plugin not supported", fn ->
-        Plugins.module_for_name(:an_ancient_bird)
+        Plugins.module_for_name("an_ancient_bird")
       end
     end
   end
