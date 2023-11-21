@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [2.1.0] - 2023-11-21
+
+- Add support for functions as `CredoNaming.Check.Consistency.ModuleFilename` plugins ([#28](https://github.com/mirego/credo_naming/pull/28))
+- Deprecate the use of `:phoenix` as a predefined plugin ([#29](https://github.com/mirego/credo_naming/pull/29))
+
 ## [2.0.2] - 2023-10-03
 
 - Add `app_paths` option in `CredoNaming.Check.Consistency.ModuleFilename` to provide custom umbrella project `apps` path [#27](https://github.com/mirego/credo_naming/pull/27)
