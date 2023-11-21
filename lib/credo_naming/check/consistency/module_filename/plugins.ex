@@ -4,5 +4,6 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename.Plugins do
   @callback transform_paths(paths :: list(list(atom()))) :: list(list(atom()))
 
   def module_for_name(:phoenix), do: Phoenix
+  def module_for_name(fun) when is_function(fun), do: fun
   def module_for_name(_), do: raise("Plugin not supported")
 end

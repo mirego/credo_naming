@@ -143,7 +143,11 @@ def valid_filename?(filename, module_name, opts), do: CredoNaming.Check.Consiste
 {CredoNaming.Check.Consistency.ModuleFilename, valid_filename_callback: &valid_filename/3}
 ```
 
-Instead of implementing your own `valid_filename_callback` function, you can use the `plugins` option to enforce a specific supported naming convention. For now, only `:phoenix` is supported.
+Instead of implementing your own `valid_filename_callback` function, you can use the `plugins` option to enforce a specific supported naming convention. This option accepts a list of: one arity function or plugin name (for now, only `:phoenix` is supported as a predefined plugin).
+
+```
+{CredoNaming.Check.Consistency.ModuleFilename, plugins: [:phoenix, &IO.inspect/1]}
+```
 
 #### Setting `apps_path`
 
@@ -160,6 +164,7 @@ In case you have an umbrella project and have set `apps_path` to something other
 - Felipe Duzzi ([@duzzifelipe](https://github.com/duzzifelipe))
 - Daniel Willeitner ([@D-Town44](https://github.com/D-Town44))
 - Daniel Reigada ([@DReigada](https://github.com/DReigada))
+- Pavel Tsiukhtsiayeu ([@paveltyk](https://github.com/paveltyk))
 
 ## License
 
