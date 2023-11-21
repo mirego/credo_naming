@@ -8,6 +8,10 @@ defmodule CredoNaming.Check.Consistency.ModuleFilename.PluginsTest do
       assert Plugins.Phoenix == Plugins.module_for_name(:phoenix)
     end
 
+    test "should return plugin for plugin in list" do
+      assert Plugins.Phoenix == Plugins.module_for_name(Plugins.Phoenix)
+    end
+
     test "should return one arity function for function" do
       fun = Plugins.module_for_name(fn paths -> paths end)
       assert 1 == :erlang.fun_info(fun)[:arity]
