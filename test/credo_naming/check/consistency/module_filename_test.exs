@@ -176,7 +176,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     """
     |> to_source_file("lib/foo_web/controllers/bar_controller.ex")
     |> refute_issues(@described_check,
-      plugins: [:phoenix]
+      plugins: [CredoNaming.Check.Consistency.ModuleFilename.Plugins.Phoenix]
     )
   end
 
@@ -359,7 +359,7 @@ defmodule CredoNaming.Check.Consistency.ModuleFilenameTest do
     """
     |> to_source_file("lib/foo_web/controllers/some_another_controller.ex")
     |> assert_issue(@described_check,
-      plugins: [:phoenix]
+      plugins: [CredoNaming.Check.Consistency.ModuleFilename.Plugins.Phoenix]
     )
   end
 
